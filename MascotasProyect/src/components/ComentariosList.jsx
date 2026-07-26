@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import apiMascotas from "../api/apiMascotas";
+import ComentarioForm from "./ComentarioForm";
 
 function ComentariosList({ mascotaId }) {
     const [comentarios, setComentarios] = useState([]);
@@ -26,6 +27,26 @@ function ComentariosList({ mascotaId }) {
             setCargando(false);
         }
     };
+    
+    const eliminarComentario = async (idComentario) => {
+        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este comentario?");
+        if (!confirmar) return;
+
+        try {
+            // Hacemos el DELETE a la API pasándole el ID del comentario
+            const response = await apiMascotas.delete(`comentarios/${idComentario}/`);
+            
+            // 204 (Eliminado con éxito)
+            if (response.status === 204) {
+                // Volvemos a pedir los comentarios a la API para que desaparezca de la pantalla
+                fetchComentarios();
+            }
+        } catch (error) {
+            console.log("Error al eliminar el comentario:", error);
+            alert("No se pudo eliminar el comentario.");
+        }
+    };
+
 
     // Ejecutamos la petición en cuanto el componente recibe el mascotaId
     useEffect(() => {
@@ -41,6 +62,8 @@ function ComentariosList({ mascotaId }) {
     return (
         <div>
             <h3>Comentarios ({comentarios.length})</h3>
+            {/* Le pasamos el fetchComentarios para que se ejecute al terminar el POST */}
+            <ComentarioForm mascotaId={mascotaId} onComentarioAgregado={fetchComentarios} />
             
             {comentarios.length === 0 ? (
                 <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
@@ -55,6 +78,10 @@ function ComentariosList({ mascotaId }) {
                                 </span>
                             </p>
                             <p>{comentario.contenido}</p>
+                            {/* Usamos función flecha para pasar el ID */}
+                            <button onClick={() => eliminarComentario(comentario.id)}>
+                                Eliminar comentario
+                            </button>
                         </li>
                     ))}
                 </ul>
