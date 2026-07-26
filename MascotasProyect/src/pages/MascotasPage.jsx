@@ -45,6 +45,27 @@ function MascotasPage(){
             return { exito: false };
         }
     };
+
+    // Peticion DELETE
+    const eliminarMascota = async (id) => {
+        //Preguntamos al usuario para evitar borrados por accidente
+        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
+        if (!confirmar) return;
+
+        try {
+            // Pasamos el ID en la URL
+            const response = await apiMascotas.delete(`mascotas/${id}/`);
+            
+            // 204 significa "No Content" (Eliminado con éxito)
+            if (response.status === 204) {
+                alert("Mascota eliminada correctamente.");
+                fetchMascotas(); // Volvemos a pedir la lista para que desaparezca
+            }
+        } catch (error) {
+            manejarErroresAPI(error, "eliminar la mascota");
+        }
+    };
+
     // Funcion auxiliar para manejar lo errores globales
     const manejarErroresAPI = (error, accion) => {
         if (error.response) {
@@ -75,7 +96,7 @@ function MascotasPage(){
         <article>
             <h1>Pagina Mascotas</h1>
             <MascotasForm onAdd={crearMascotas}/>
-            <MascotasList  lista={mascotasList}/>
+            <MascotasList  lista={mascotasList} onDelete={eliminarMascota}/>
 
         </article>
     )}

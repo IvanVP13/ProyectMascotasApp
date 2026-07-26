@@ -1,4 +1,4 @@
-function MascotasList({lista}){
+function MascotasList({lista, onDelete}){
 
     function formatLabel(value) {
         if (!value) return "";
@@ -35,7 +35,13 @@ return (
                         />
                         
                         <div>
-                            <h2>{formatLabel(m.nombre)} (#{m.id})</h2>
+                            <h2>{formatLabel(m.nombre)} (#{m.id})
+                                
+                                <button
+                                onClick={() => onDelete(m.id)} 
+                                >Eliminar
+                                </button>
+                            </h2>
                             
                             <div>
                                 <span>Estado: {formatLabel(m.estado)}</span> | 
@@ -50,7 +56,6 @@ return (
                                 <li><strong>Sexo:</strong> {formatLabel(m.sexo)}</li>
                                 <li><strong>Tamaño:</strong> {formatLabel(m.tamano)}</li>
                             </ul>
-                            
                             <div>
                                 <p>Registro: {m.fecha_creacion}</p>
                                 <p>Última act: {m.fecha_actualizacion}</p>
