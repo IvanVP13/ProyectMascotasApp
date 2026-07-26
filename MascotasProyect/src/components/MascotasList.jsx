@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function MascotasList({lista, onDelete}){
+    //inicializa un gancho
+    const navigate = useNavigate();
 
     function formatLabel(value) {
         if (!value) return "";
@@ -59,6 +63,9 @@ return (
                             <div>
                                 <p>Registro: {m.fecha_creacion}</p>
                                 <p>Última act: {m.fecha_actualizacion}</p>
+                                <button onClick={() => navigate(`/mascota/${m.id}`)}>
+                                    Ver Detalles
+                                </button>
                             </div>
                         </div>
                     </div>

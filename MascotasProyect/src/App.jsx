@@ -1,6 +1,6 @@
 import { NavLink, Routes, Route } from "react-router-dom"
+import DetallesPage from "./pages/DetallesPage"
 import MascotasPage from "./pages/MascotasPage"
-import ComentariosPage from "./pages/ComentariosPage"
 
 function App() {
 
@@ -13,7 +13,7 @@ function App() {
               <NavLink to="/">Mascotas</NavLink>
             </li>
             <li>
-              <NavLink to="/comentarios">Comentarios</NavLink>
+              <NavLink to="/detalles">Detalles</NavLink>
             </li>
           </ul>
         </nav>
@@ -22,7 +22,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<MascotasPage />} />
-          <Route path="/comentarios" element={<ComentariosPage />}/>
+          <Route path="/mascota/:id" element={<DetallesPage />}/>
         </Routes>
       </main>
 
