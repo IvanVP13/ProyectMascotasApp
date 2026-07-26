@@ -1,5 +1,23 @@
 function MascotasList({lista}){
 
+    function formatLabel(value) {
+        if (!value) return "";
+
+        // Correcciones especificas primero
+        const correcciones = {
+            en_adopcion: "En Adopción",
+            pequeno: "Pequeño"
+        };
+
+        //Si el valor coincide con alguna clave del objeto, devuelde version corregida
+        if (correcciones[value]) {
+            return correcciones[value];
+        }
+
+        //Para los demas casos primera letra a mayúscula
+        return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
 return (
         <>
             <h2>Listado de Mascotas</h2>
@@ -17,20 +35,20 @@ return (
                         />
                         
                         <div>
-                            <h2>{m.nombre} (#{m.id})</h2>
+                            <h2>{formatLabel(m.nombre)} (#{m.id})</h2>
                             
                             <div>
-                                <span>Estado: {m.estado}</span> | 
-                                <span> Tipo: {m.tipo_animal}</span>
+                                <span>Estado: {formatLabel(m.estado)}</span> | 
+                                <span> Tipo: {formatLabel(m.tipo_animal)}</span>
                             </div>
                             
-                            <p>Descripción: {m.descripcion}</p>
+                            <p>Descripción: {formatLabel(m.descripcion)}</p>
                             
                             <ul>
-                                <li><strong>Edad:</strong> {m.edad}</li>
-                                <li><strong>Raza:</strong> {m.raza}</li>
-                                <li><strong>Sexo:</strong> {m.sexo}</li>
-                                <li><strong>Tamaño:</strong> {m.tamano}</li>
+                                <li><strong>Edad:</strong> {m.edad} años (aprox)</li>
+                                <li><strong>Raza:</strong> {formatLabel(m.raza)}</li>
+                                <li><strong>Sexo:</strong> {formatLabel(m.sexo)}</li>
+                                <li><strong>Tamaño:</strong> {formatLabel(m.tamano)}</li>
                             </ul>
                             
                             <div>
