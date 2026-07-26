@@ -4,15 +4,44 @@ import { useState } from "react";
 function MascotasForm ({onAdd}){
 
     const [datos, setDatos] = useState({
-        nombre: "", descripcion: "", estado: "en adopcion", tipo_animal: "perro",
-        edad: "", raza: "", sexo: "desconocida", tamano: "desconocida"
+        nombre: "", descripcion: "", estado: "en_adopcion", tipo_animal: "perro",
+        edad: "", raza: "", sexo: "desconocido", tamano: "desconocido"
     })
+
+    const [errores, setErrores] = useState({});
 
     //Empaquetamos en FormData por la imagen
     const [imagen, setImagen] = useState(null);
 
-    const handleSubmit = (e) => {
+    //Funcion para revisar que ningun campo este vacio
+    const validarFormulario = () => {
+        const nuevosErrores = {};
+        
+        //validar edad
+        if (!datos.edad.toString().trim()) {
+            nuevosErrores.edad = "La edad es obligatoria.";
+        } else if (Number(datos.edad) < 0 || Number(datos.edad) > 30) {
+            nuevosErrores.edad = "Por favor ingresa una edad real (entre 0 y 30).";
+        }
+
+        // .trim() elimina espacios. Si queda vacio lanza error.
+        if (!datos.nombre.trim()) nuevosErrores.nombre = "El nombre es obligatorio.";
+        if (!datos.raza.trim()) nuevosErrores.raza = "La raza es obligatoria.";
+        if (!datos.descripcion.trim()) nuevosErrores.descripcion = "La descripción es obligatoria.";
+        if (!imagen) nuevosErrores.imagen = "Debe adjuntar una imagen.";
+
+        setErrores(nuevosErrores);
+
+        //Si el objeto nuevosErrores no tiene claves, significa que no hay errores (retorna true)
+        return Object.keys(nuevosErrores).length === 0;
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!validarFormulario()) {
+            return; 
+        }
 
         const formularioData = new FormData();
         //Guarda las claves y valores del objeto datos
@@ -22,8 +51,34 @@ function MascotasForm ({onAdd}){
         if (imagen){
             formularioData.append("imagen", imagen);
         }
+
         //Ejecutamos la funcion del padre y pasamos datos
-        onAdd(formularioData);
+        const respuesta = await onAdd(formularioData);
+
+        if (respuesta && !respuesta.exito && respuesta.erroresBackend) {
+            const errAPI = respuesta.erroresBackend;
+            // Usamos operador ternario para evitar que se caiga
+            // Si el api no manda error de 'nombre', simplemente queda en blanco ("")
+            setErrores({
+                nombre: errAPI?.nombre?.[0] || "",
+                edad: errAPI?.edad?.[0] || "",
+                raza: errAPI?.raza?.[0] || "",
+                descripcion: errAPI?.descripcion?.[0] || "",
+                imagen: errAPI?.imagen?.[0] || ""
+            });
+            
+            return; // Detenemos la ejecucion
+        }
+
+        //Limpiamos si fue exito el formulario para la siguiente mascota
+        if (respuesta && respuesta.exito) {
+            setDatos({
+                nombre: "", descripcion: "", estado: "en_adopcion", tipo_animal: "perro",
+                edad: "", raza: "", sexo: "desconocido", tamano: "desconocido"
+            });
+            setImagen(null);
+            setErrores({});
+        }
     };
     return(
         <>
@@ -38,6 +93,7 @@ function MascotasForm ({onAdd}){
                         value={datos.nombre}
                         onChange={(e) => setDatos({...datos,nombre: e.target.value })}  
                     />
+                    {errores.nombre && <p>{errores.nombre}</p>}
                 </div>
                 
                 <div>
@@ -47,6 +103,8 @@ function MascotasForm ({onAdd}){
                         value={datos.edad}
                         onChange={(e) => setDatos({...datos,edad: e.target.value })} 
                     />
+                    <label>Edad aproximada en años, si se conoce.</label>
+                    {errores.edad && <p>{errores.edad}</p>}
                 </div>
 
                 <div>
@@ -56,6 +114,7 @@ function MascotasForm ({onAdd}){
                         value={datos.raza}
                         onChange={(e) => setDatos({...datos,raza: e.target.value })} 
                     />
+                    {errores.raza && <p>{errores.raza}</p>}
                 </div>
 
                 <div>
@@ -64,6 +123,7 @@ function MascotasForm ({onAdd}){
                         value={datos.descripcion}
                         onChange={(e) => setDatos({...datos,descripcion: e.target.value })}  
                     ></textarea>
+                    {errores.descripcion && <p>{errores.descripcion}</p>}
                 </div>
 
                 <div>
@@ -75,7 +135,7 @@ function MascotasForm ({onAdd}){
                         <option value="encontrada">Encontrada</option>
                         <option value="perdida">Perdida</option>
                         <option value="adoptada">Adoptada</option>
-                        <option value="en adopcion">En adopción</option>
+                        <option value="en_adopcion">En adopción</option>
                     </select>
                 </div>
 
@@ -115,7 +175,7 @@ function MascotasForm ({onAdd}){
                         onChange={(e) => setDatos({...datos,tamano: e.target.value })}
                         required
                     >
-                        <option value="pequeño">Pequeño</option>
+                        <option value="pequeno">Pequeño</option>
                         <option value="mediano">Mediano</option>
                         <option value="grande">Grande</option>
                         <option value="desconocido">Desconocido</option>
@@ -130,6 +190,7 @@ function MascotasForm ({onAdd}){
                         accept="image/*" 
                         onChange={(e) => setImagen(e.target.files[0])} 
                     />
+                    {errores.imagen && <p>{errores.imagen}</p>}
                 </div>
                 
                 <button type="submit">Publicar Mascota</button>

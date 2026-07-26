@@ -31,11 +31,44 @@ function MascotasPage(){
                 alert("Mascota creada con exito");
                 //Pedimos la lista para que aparesca el nuevo registro
                 fetchMascotas();
+                //Le mandamos al formulario el exito
+                return { exito: true };
             }
         } catch (error){
-            console.log("Error al crear mascota", error.response);
+            // Si es un error 400 lo mandamos al formulario
+            if (error.response && error.response.status === 400) {
+                return { exito: false, erroresBackend: error.response.data };
+            }
+            
+            // Si es otro error 500 usamos alerta global
+            manejarErroresAPI(error, "crear la mascota");
+            return { exito: false };
         }
     };
+    // Funcion auxiliar para manejar lo errores globales
+    const manejarErroresAPI = (error, accion) => {
+        if (error.response) {
+            const status = error.response.status;
+            const dataBackend = error.response.data;
+
+            if (status === 404) {
+                alert(`Error 404: No se encontró la información en el servidor al intentar ${accion}.`);
+            } 
+            else if (status === 500) {
+                alert(`Error 500: Hubo un problema interno en el servidor intentar ${accion}.`);
+            } 
+            else {
+                alert(`Error ${status} del servidor:\n${dataBackend?.detail || "Ha ocurrido un problema."}`);
+            }
+        } 
+        else if (error.request) {
+            alert(`Error de red: No se pudo conectar con el servidor para ${accion}. Verifica tu internet.`);
+        } 
+        else {
+            console.log("Error de Axios:", error.message);
+        }
+    };
+
     useEffect(() => {fetchMascotas(); }, []);
 
     return(
