@@ -9,9 +9,14 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Limpiamos errores previos
+        setError(""); // Limpiar errores previos
 
-        // Validacion 
+        // Validaciones
+        if (!autor.trim()) {
+            setError("El nombre de autor es obligatorio.");
+            return;
+        }
+
         if (!contenido.trim()) {
             setError("El comentario no puede estar vacío.");
             return;
@@ -21,7 +26,7 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
             // Armamos el paquete de datos
             const nuevoComentario = {
                 mascota: Number(mascotaId),
-                autor: autor.trim() || "Anónimo", // Si lo dejan en blanco, será Anónimo
+                autor: autor.trim(),
                 contenido: contenido.trim()
             };
 
@@ -46,16 +51,14 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
         <div >
             <h4>Dejar un comentario</h4>
             
-            {/* Usamos display: "flex" para poner todo en la misma línea horizontal */}
             <form onSubmit={handleSubmit} >
                 
                 <div>
-                    <label >Nombre:</label>
+                    <label >Autor:</label>
                     <input
                         type="text"
                         value={autor}
                         onChange={(e) => setAutor(e.target.value)}
-                        placeholder="Opcional"
                     />
                 </div>
                 
