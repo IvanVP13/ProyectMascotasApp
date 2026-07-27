@@ -540,3 +540,140 @@ form button[type="button"]:hover {
   border-color: #3182ce;
   box-shadow: 0 0 0 0.1875rem rgba(49, 130, 206, 0.15);
 }
+
+
+/* --- ESTILOS PARA EL FORMULARIO DE EDICIÓN --- */
+
+.editar-formulario-contenedor {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid #e2e8f0;
+  box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.05);
+  margin-top: 0.5rem;
+}
+
+.editar-formulario-titulo {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  border-bottom: 0.125rem solid #edf2f7;
+  padding-bottom: 0.625rem;
+}
+
+/* Rejilla de dos columnas para aprovechar el espacio horizontal */
+.editar-formulario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem; /* 20px */
+}
+
+/* Elementos que deben ocupar todo el ancho de la tarjeta (como descripción o imagen) */
+.editar-campo-completo {
+  grid-column: span 2;
+}
+
+.editar-grupo-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.editar-grupo-campo label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* Estilo unificado para inputs, selects y textareas respetando los originales */
+.editar-grupo-campo input[type="text"],
+.editar-grupo-campo input[type="number"],
+.editar-grupo-campo select,
+.editar-grupo-campo textarea,
+.editar-grupo-campo input[type="file"] {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 0.0625rem solid #cbd5e0;
+  border-radius: 0.375rem;
+  font-size: 0.95rem;
+  color: #2d3748;
+  background-color: #fff;
+}
+
+.editar-grupo-campo input:focus,
+.editar-grupo-campo select:focus,
+.editar-grupo-campo textarea:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 0.1875rem rgba(49, 130, 206, 0.15);
+}
+
+.editar-grupo-campo textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+/* Textos de ayuda o errores */
+.editar-error-texto {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.125rem;
+}
+
+.editar-ayuda-texto {
+  color: #718096;
+  font-size: 0.8rem;
+  margin-top: 0.125rem;
+}
+
+/* Botonera de acciones (Guardar y Cancelar con su orden original correcto) */
+.editar-acciones {
+  display: flex;
+  gap: 0.9375rem;
+  margin-top: 1.875rem;
+  border-top: 0.0625rem solid #edf2f7;
+  padding-top: 1.25rem;
+}
+
+.btn-guardar {
+  background-color: #3182ce;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  flex: 1;
+}
+
+.btn-guardar:hover {
+  background-color: #2b6cb0;
+}
+
+.btn-cancelar {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: #cbd5e0;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 48rem) {
+  .editar-formulario-grid {
+    grid-template-columns: 1fr;
+  }
+  .editar-campo-completo {
+    grid-column: span 1;
+  }
+  .editar-acciones {
+    flex-direction: column-reverse;
+  }
+}
