@@ -8,6 +8,8 @@ function MascotasPage(){
     const [mascotasList, setmascotaList] = useState([]);
     const [errorGlobal, setErrorGlobal] = useState(""); // Estado para errores de carga
     const [cargando, setCargando] = useState(true);
+
+
     //Traemos los datos con fecth
     const fetchMascotas = async ()  => {
         try{
@@ -62,22 +64,30 @@ function MascotasPage(){
             }
         }
     };
+
     useEffect(() => {fetchMascotas(); }, []);
 
     return(
-        <article>
-            <h1>Pagina Mascotas</h1>
-            {errorGlobal && <p>{errorGlobal}</p>}
-            <MascotasForm onAdd={fetchMascotas}/>
+        <div className="dashboard-container">
+            {/* Columna Izquierda: Barra lateral fija con el Formulario */}
+            <aside className="dashboard-sidebar">
+                <MascotasForm onAdd={fetchMascotas} />
+            </aside>
 
-            {/*Mostramos el mensaje o la lista dependiendo de "cargando" */}
-            {cargando ? (
-                <p>Cargando lista de mascotas...</p>
-            ) : (
-                <MascotasList lista={mascotasList} onDelete={eliminarMascota} />
-            )}
-
-        </article>
-    )}
+            {/* Columna Derecha: Contenido principal con el listado */}
+            <main className="dashboard-main">
+                <h1>Panel de Control de Mascotas</h1>
+                
+                {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
+                
+                {cargando ? (
+                    <p>Cargando lista de mascotas...</p>
+                ) : (
+                    <MascotasList lista={mascotasList} onDelete={eliminarMascota} />
+                )}
+            </main>
+        </div>
+    )
+}
 
 export default MascotasPage
