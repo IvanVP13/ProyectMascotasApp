@@ -349,6 +349,16 @@ form button[type="button"]:hover {
 /* --- ESTILOS DE LA VISTA DE DETALLES --- */
 
 /* Contenedor principal de la página de detalles */
+.detalle-item,
+.detalle-descripcion,
+.detalle-info-cuerpo p,
+.detalle-info-cuerpo span,
+.detalle-info-cuerpo li {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
 .detalle-contenedor {
   max-width: 68.75rem; /* 1100px */
   margin: 0 auto;
@@ -366,10 +376,11 @@ form button[type="button"]:hover {
 /* Contenedor en dos columnas */
 .detalle-grid-contenido {
   display: grid;
-  grid-template-columns: 22rem 1fr; /* Columna izquierda fija para la imagen, derecha para datos */
+  grid-template-columns: 22rem 1fr;
   gap: 2.5rem;
   align-items: start;
   margin-top: 1.5rem;
+  min-width: 0; /* Vital para que el flex/grid hijo no se expanda de más por texto largo */
 }
 
 /* Control estricto del tamaño de la imagen para que no quede gigante */
@@ -394,6 +405,7 @@ form button[type="button"]:hover {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  min-width: 0; /* Evita que los elementos hijos ignoren el ancho máximo del contenedor */
 }
 
 .detalle-titulo {
@@ -428,6 +440,8 @@ form button[type="button"]:hover {
   border-left: 0.25rem solid #3182ce;
   font-size: 0.95rem;
   color: #4a5568;
+  width: 100%; /* Asegura que no rebase el 100% de la columna */
+  box-sizing: border-box;
 }
 
 /* Botonera superior de acciones (Editar y Volver) */
@@ -456,4 +470,73 @@ form button[type="button"]:hover {
   .detalle-imagen-contenedor {
     max-height: 18.75rem;
   }
+}
+
+/* --- ESTILOS PARA LA SECCIÓN Y FORMULARIO DE COMENTARIOS --- */
+
+.comentario-formulario-tarjeta {
+  background-color: #ffffff;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  max-width: 45rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.02);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Espacio uniforme entre elementos */
+  align-items: flex-start; /* Todo alineado a la izquierda */
+}
+
+/* Campo de autor con un ancho controlado y elegante */
+.comentario-grupo-autor {
+  width: 100%;
+  max-width: 20rem; /* 320px para que no ocupe toda la pantalla */
+}
+
+.comentario-grupo-autor input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 0.0625rem solid #cbd5e0;
+  border-radius: 0.375rem;
+  font-size: 0.95rem;
+}
+
+/* Textarea ocupando todo el ancho disponible */
+.comentario-grupo-contenido {
+  width: 100%;
+}
+
+.comentario-grupo-contenido textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 0.0625rem solid #cbd5e0;
+  border-radius: 0.375rem;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 5rem;
+}
+
+/* Botón de publicar alineado a la izquierda con un ancho equilibrado */
+.comentario-formulario-tarjeta button[type="submit"] {
+  width: auto;
+  padding: 0.625rem 1.875rem;
+  background-color: #3182ce;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.comentario-formulario-tarjeta button[type="submit"]:hover {
+  background-color: #2b6cb0;
+}
+
+.comentario-grupo-autor input:focus,
+.comentario-grupo-contenido textarea:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 0.1875rem rgba(49, 130, 206, 0.15);
 }
