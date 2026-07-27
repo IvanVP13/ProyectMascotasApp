@@ -301,3 +301,54 @@ form button.btn-cancelar {
 form button[type="button"]:hover {
   background-color: #cbd5e0;
 }
+
+/* --- ESTILOS DE DISEÑO DASHBOARD / BARRA LATERAL --- */
+
+/* Contenedor general que divide la pantalla en dos columnas */
+.dashboard-container {
+  display: flex;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+/* Barra lateral fija para el formulario */
+.dashboard-sidebar {
+  flex: 0 0 380px; /* Ancho fijo para la barra lateral */
+  position: sticky;
+  top: 90px; /* Se queda fija al hacer scroll, debajo del header */
+}
+
+/* Ajuste para que el formulario dentro del sidebar no tenga márgenes excesivos */
+.dashboard-sidebar form {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Contenido principal (Lista de mascotas) */
+.dashboard-main {
+  flex: 1; /* Ocupa todo el espacio restante */
+  min-width: 0; /* Evita desbordamientos en grid */
+}
+
+.dashboard-main h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+/* Adaptabilidad para pantallas pequeñas (Celulares o tablets verticales) */
+@media (max-width: 968px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .dashboard-sidebar {
+    position: static;
+    width: 100%;
+    flex: none;
+  }
+}

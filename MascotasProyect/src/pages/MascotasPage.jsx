@@ -9,8 +9,6 @@ function MascotasPage(){
     const [errorGlobal, setErrorGlobal] = useState(""); // Estado para errores de carga
     const [cargando, setCargando] = useState(true);
 
-    // Estado para controlar si el formulario está visible o oculto
-    const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
     //Traemos los datos con fecth
     const fetchMascotas = async ()  => {
@@ -66,43 +64,28 @@ function MascotasPage(){
             }
         }
     };
-    // Función que se ejecuta cuando la mascota se crea con exito
-    const handleMascotaCreada = () => {
-        fetchMascotas(); // Recargamos la lista
-        setMostrarFormulario(false); // Cerramos el formulario automáticamente
-    };
+
     useEffect(() => {fetchMascotas(); }, []);
 
     return(
-        <div className="mascotas-container">
-            <h1>Panel de Mascotas</h1>
-            
-            {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
-            
-            {/* Botón principal para abrir/cerrar el formulario */}
-            <div style={{ margin: "20px 0" }}>
-                <button 
-                    className="btn-detalles" 
-                    onClick={() => setMostrarFormulario(!mostrarFormulario)}
-                    style={{ padding: "10px 20px", fontSize: "1rem" }}
-                >
-                    {mostrarFormulario ? "✕ Cerrar Formulario" : "+ Publicar Nueva Mascota"}
-                </button>
-            </div>
+        <div className="dashboard-container">
+            {/* Columna Izquierda: Barra lateral fija con el Formulario */}
+            <aside className="dashboard-sidebar">
+                <MascotasForm onAdd={fetchMascotas} />
+            </aside>
 
-            {/* El formulario solo se renderiza si 'mostrarFormulario' es true */}
-            {mostrarFormulario && (
-                <div style={{ marginBottom: "30px", animation: "fadeIn 0.3s ease" }}>
-                    <MascotasForm onAdd={handleMascotaCreada} />
-                </div>
-            )}
-
-            {/* Listado de mascotas */}
-            {cargando ? (
-                <p>Cargando lista de mascotas...</p>
-            ) : (
-                <MascotasList lista={mascotasList} onDelete={eliminarMascota} />
-            )}
+            {/* Columna Derecha: Contenido principal con el listado */}
+            <main className="dashboard-main">
+                <h1>Panel de Control de Mascotas</h1>
+                
+                {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
+                
+                {cargando ? (
+                    <p>Cargando lista de mascotas...</p>
+                ) : (
+                    <MascotasList lista={mascotasList} onDelete={eliminarMascota} />
+                )}
+            </main>
         </div>
     )
 }
