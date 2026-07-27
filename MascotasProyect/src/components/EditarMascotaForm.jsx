@@ -80,7 +80,7 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
 
     return (
         <div className="editar-formulario-contenedor">
-            <h3 className="editar-formulario-titulo">Editar datos de: {mascota.nombre}</h3>
+            <h3 className="editar-formulario-titulo">Actualizar información de: {mascota.nombre}</h3>
             
             <form onSubmit={handleSubmit}>
                 <div className="editar-formulario-grid">

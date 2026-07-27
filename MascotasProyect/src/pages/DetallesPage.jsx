@@ -98,7 +98,13 @@ function DetallesPage({}) {
                         {/* Columna Derecha: Información detallada */}
                         <div className="detalle-info-cuerpo">
                             <div>
-                                <h1 className="detalle-titulo">{formatLabel(mascota.nombre)}</h1>
+                                
+                                <h1 className="detalle-titulo">
+                                    Ficha de: {formatLabel(mascota.nombre)} 
+                                    <span style={{ fontSize: "1rem", fontWeight: "normal", color: "#718096", marginLeft: "0.75rem" }}>
+                                        ({formatLabel(mascota.estado)})
+                                    </span>
+                                </h1>
                                 
                                 <ul className="detalle-grupo-datos">
                                     <li className="detalle-item"><strong>Tipo:</strong> {formatLabel(mascota.tipo_animal)}</li>

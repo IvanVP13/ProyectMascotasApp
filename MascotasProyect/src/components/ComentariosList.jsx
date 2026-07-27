@@ -72,28 +72,32 @@ function ComentariosList({ mascotaId }) {
     }
 
     return (
-        <div>
-            <h3>Comentarios ({comentarios.length})</h3>
+        <div style={{ width: "100%" }}>
+            <h3 className="comentarios-titulo-principal">Comentarios ({comentarios.length})</h3>
+            
             {/* Le pasamos el fetchComentarios para que se ejecute al terminar el POST */}
             <ComentarioForm mascotaId={mascotaId} onComentarioAgregado={fetchComentarios} />
 
-            {error && <p>{error}</p>}
+            {error && <p className="editar-error-texto">{error}</p>}
             
             {comentarios.length === 0 ? (
-                <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                <p style={{ color: "#718096", fontStyle: "italic", marginTop: "1rem" }}>
+                    No hay comentarios aún. ¡Sé el primero en comentar!
+                </p>
             ) : (
-                <ul>
+                <ul className="comentarios-lista">
                     {comentarios.map((comentario) => (
-                        <li key={comentario.id}>
-                            <p>
+                        <li key={comentario.id} className="comentario-item">
+                            <p className="comentario-meta">
                                 <strong>{comentario.autor || "Usuario anónimo"}</strong> 
                                 <span>
                                     {comentario.fecha_creacion && ` - ${new Date(comentario.fecha_creacion).toLocaleDateString()}`}
                                 </span>
                             </p>
-                            <p>{comentario.contenido}</p>
-                            {/* Usamos función flecha para pasar el ID */}
-                            <button onClick={() => eliminarComentario(comentario.id)}>
+                            <p className="comentario-texto">{comentario.contenido}</p>
+                            
+                            {/* Botón sutil para eliminar */}
+                            <button className="btn-eliminar-comentario" onClick={() => eliminarComentario(comentario.id)}>
                                 Eliminar comentario
                             </button>
                         </li>

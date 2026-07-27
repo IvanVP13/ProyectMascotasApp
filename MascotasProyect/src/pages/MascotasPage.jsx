@@ -76,7 +76,7 @@ function MascotasPage(){
 
             {/* Columna Derecha: Contenido principal con el listado */}
             <main className="dashboard-main">
-                <h1>Panel de Control de Mascotas</h1>
+                <h1>Directorio de Mascotas</h1>
                 
                 {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
                 
