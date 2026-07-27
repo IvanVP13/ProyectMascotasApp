@@ -185,3 +185,119 @@ button:active {
 .btn-eliminar:hover {
   background-color: #c53030;
 }
+
+/* --- ESTILOS GENERALES PARA FORMULARIOS Y BOTONES --- */
+
+/* Contenedor o envoltura de los formularios */
+form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  max-width: 600px;
+  margin: 20px auto;
+  border: 1px solid #e2e8f0;
+}
+
+form h2, form h3, form h4 {
+  color: #2d3748;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 8px;
+}
+
+/* Agrupación de cada campo (Label + Input) */
+form div {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Etiquetas de los inputs */
+form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* Campos de texto, números y selectores */
+form input[type="text"],
+form input[type="number"],
+form select,
+form textarea,
+form input[type="file"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #2d3748;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efecto al hacer clic en un input (Foco) */
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form select:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+/* Textareas con tamaño vertical ajustable */
+form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Mensajes de error específicos de validación en los formularios */
+form p[style*="red"], form p {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* --- BOTONES DENTRO DE FORMULARIOS --- */
+form button[type="submit"],
+form button.btn-guardar {
+  background-color: #3182ce;
+  color: white;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+form button[type="submit"]:hover {
+  background-color: #2b6cb0;
+}
+
+/* Botón secundario o de cancelar dentro de formularios */
+form button[type="button"],
+form button.btn-cancelar {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+}
+
+form button[type="button"]:hover {
+  background-color: #cbd5e0;
+}
