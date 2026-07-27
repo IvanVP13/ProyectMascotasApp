@@ -6,6 +6,8 @@ import MascotasForm from "../components/MascotasForm";
 function MascotasPage(){
 
     const [mascotasList, setmascotaList] = useState([]);
+    const [errorGlobal, setErrorGlobal] = useState(""); // Estado para errores de carga
+    
     //Traemos los datos con fecth
     const fetchMascotas = async ()  => {
         try{
@@ -17,34 +19,17 @@ function MascotasPage(){
                 setmascotaList(response.data)
             }
 
-        }catch(error){
-            console.log(error.response);
-        };
-    }
-
-
-    //Peticion POST
-    const crearMascotas = async(datosNuevaMascota) => {
-        try{
-            const response = await apiMascotas.post("mascotas/",datosNuevaMascota);
-            if (response.status === 201){
-                alert("Mascota creada con exito");
-                //Pedimos la lista para que aparesca el nuevo registro
-                fetchMascotas();
-                //Le mandamos al formulario el exito
-                return { exito: true };
-            }
-        } catch (error){
-            // Si es un error 400 lo mandamos al formulario
-            if (error.response && error.response.status === 400) {
-                return { exito: false, erroresBackend: error.response.data };
-            }
+        } catch (error) {
+            console.log("Error al cargar mascotas:", error);
             
-            // Si es otro error 500 usamos alerta global
-            manejarErroresAPI(error, "crear la mascota");
-            return { exito: false };
+            const status = error.response?.status;
+            if (status === 404) {
+                setErrorGlobal("Error 404: No se encontró la ruta de las mascotas en el servidor.");
+            } else {
+                setErrorGlobal("Ocurrió un error inesperado al cargar la lista de mascotas.");
+            }
         }
-    };
+    }
 
     // Peticion DELETE
     const eliminarMascota = async (id) => {
@@ -56,46 +41,30 @@ function MascotasPage(){
             // Pasamos el ID en la URL
             const response = await apiMascotas.delete(`mascotas/${id}/`);
             
-            // 204 significa "No Content" (Eliminado con éxito)
             if (response.status === 204) {
                 alert("Mascota eliminada correctamente.");
                 fetchMascotas(); // Volvemos a pedir la lista para que desaparezca
             }
         } catch (error) {
-            manejarErroresAPI(error, "eliminar la mascota");
-        }
-    };
-
-    // Funcion auxiliar para manejar lo errores globales
-    const manejarErroresAPI = (error, accion) => {
-        if (error.response) {
-            const status = error.response.status;
-            const dataBackend = error.response.data;
-
+            console.log("Error al eliminar:", error);
+            
+            // Aplicamos rúbrica
+            const status = error.response?.status;
             if (status === 404) {
-                alert(`Error 404: No se encontró la información en el servidor al intentar ${accion}.`);
-            } 
-            else if (status === 500) {
-                alert(`Error 500: Hubo un problema interno en el servidor intentar ${accion}.`);
-            } 
-            else {
-                alert(`Error ${status} del servidor:\n${dataBackend?.detail || "Ha ocurrido un problema."}`);
+                alert("Error 404: La mascota ya no existe o fue eliminada previamente.");
+                fetchMascotas(); // Recargamos para que desaparezca visualmente
+            } else {
+                alert("Ocurrió un error de conexión al intentar eliminar la mascota.");
             }
-        } 
-        else if (error.request) {
-            alert(`Error de red: No se pudo conectar con el servidor para ${accion}. Verifica tu internet.`);
-        } 
-        else {
-            console.log("Error de Axios:", error.message);
         }
     };
-
     useEffect(() => {fetchMascotas(); }, []);
 
     return(
         <article>
             <h1>Pagina Mascotas</h1>
-            <MascotasForm onAdd={crearMascotas}/>
+            {errorGlobal && <p>{errorGlobal}</p>}
+            <MascotasForm onAdd={fetchMascotas}/>
             <MascotasList  lista={mascotasList} onDelete={eliminarMascota}/>
 
         </article>

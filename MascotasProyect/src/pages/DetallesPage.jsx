@@ -15,6 +15,9 @@ function DetallesPage({}) {
     const [cargando, setCargando] = useState(true);
     const [editando, setEditando] = useState(false);
 
+    // error 404 por si se busca algo que fue eliminado o no existe
+    const [error404, setError404] = useState(false);
+
     const fetchDetalle = async () => {
         try {
             // Hacemos el GET usando el ID de la URL
@@ -24,6 +27,13 @@ function DetallesPage({}) {
             }
         } catch (error) {
             console.log("Error al cargar detalle:", error);
+            
+            // Aplicamos encadenamiento opcional
+            const status = error.response?.status;
+            
+            if (status === 404) {
+                setError404(true);
+            }
         } finally {
             setCargando(false);
         }
@@ -32,6 +42,15 @@ function DetallesPage({}) {
     useEffect(() => {fetchDetalle()}, [id]);
 
     if (cargando) return <p>Cargando detalles...</p>;
+    if (error404) {
+        return (
+            <div>
+                <h2>Error 404: Mascota no encontrada</h2>
+                <p>Parece que el registro que buscas no existe o fue eliminado recientemente.</p>
+                <button onClick={() => navigate("/")}>Volver al listado principal</button>
+            </div>
+        );
+    }
     if (!mascota) return <p>Mascota no encontrada.</p>;
 
     return (

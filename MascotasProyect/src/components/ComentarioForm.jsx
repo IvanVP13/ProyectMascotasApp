@@ -1,33 +1,28 @@
 import { useState } from "react";
 import apiMascotas from "../api/apiMascotas";
+import { validarDatosComentario } from "../utils/validations";
 
 // Recibe el ID de la mascota y una función para actualizar la lista
 function ComentarioForm({ mascotaId, onComentarioAgregado }) {
     const [autor, setAutor] = useState("");
     const [contenido, setContenido] = useState("");
-    const [error, setError] = useState("");
+    const [errores, setErrores] = useState({});
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Limpiar errores previos
+        setErrores({}); // Limpiar errores previos
 
-        // Validaciones
-        if (!autor.trim()) {
-            setError("El nombre de autor es obligatorio.");
-            return;
-        }
-
-        if (!contenido.trim()) {
-            setError("El comentario no puede estar vacío.");
-            return;
+        const nuevosErrores = validarDatosComentario(datos);
+        if (Object.keys(nuevosErrores).length > 0) {
+            setErrores(nuevosErrores);
+            return; // Detenemos el envío si el comentario está vacío o muy largo
         }
 
         try {
-            // Armamos el paquete de datos
-            const nuevoComentario = {
-                mascota: Number(mascotaId),
-                autor: autor.trim(),
-                contenido: contenido.trim()
+            // Preparamos los datos sumando el ID de la mascota al objeto
+            const datosAEnviar = {
+                ...datos,
+                mascota: mascotaId
             };
 
             // Hacemos el POST
@@ -37,13 +32,22 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
                 //Limpiamos las cajas de texto
                 setAutor("");
                 setContenido("");
+                setErrores({});
                 
                 //Le avisamos a la lista que vuelva a pedir los datos a la API
                 onComentarioAgregado();
             }
         } catch (error) {
-            console.log("Error al enviar el comentario:", error);
-            setError("Hubo un error al guardar el comentario.");
+            console.log("Error al cargar datos:", error);
+            
+            const status = error.response?.status;
+
+            if (status === 404) {
+                setError("La información solicitada ya no existe (Error 404).");
+            } 
+            else {
+                setError("No pudimos conectarnos al servidor. Revisa tu conexión a internet.");
+            }
         }
     };
 
@@ -60,6 +64,7 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
                         value={autor}
                         onChange={(e) => setAutor(e.target.value)}
                     />
+                {errores.autor && <p>{errores.autor}</p>}
                 </div>
                 
                 <div>
@@ -71,13 +76,11 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
                         placeholder="Escribe tu comentario aquí..."
                         rows="3"
                     />
+                {errores.contenido && <p>{errores.contenido}</p>}
                 </div>
-
+                {errores.general && <p>{errores.general}</p>}
                 <button type="submit">Publicar</button>
             </form>
-
-            {/* Mostramos el error abajo si lo hay */}
-            {error && <p>{error}</p>}
         </div>
     );
 }
