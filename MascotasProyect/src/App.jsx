@@ -10,7 +10,7 @@ function App() {
         <nav>
           {/* Lado izquierdo: Título de la comunidad o refugio */}
           <NavLink to="/" className="nav-brand">
-              <span>🐾</span>
+              <span>|</span>
               <h1>Red de Mascotas</h1>
           </NavLink>
 

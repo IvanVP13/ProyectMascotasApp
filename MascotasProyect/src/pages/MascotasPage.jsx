@@ -54,7 +54,6 @@ function MascotasPage(){
         } catch (error) {
             console.log("Error al eliminar:", error);
             
-            // Aplicamos rúbrica
             const status = error.response?.status;
             if (status === 404) {
                 alert("Error 404: La mascota ya no existe o fue eliminada previamente.");
@@ -78,7 +77,26 @@ function MascotasPage(){
             <main className="dashboard-main">
                 <h1>Directorio de Mascotas</h1>
                 
-                {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
+                {errorGlobal && (
+                <div className="error-404-contenedor" style={{ 
+                    minHeight: "30vh", 
+                    backgroundColor: "#fffaf0", 
+                    border: "0.125rem dashed #fed7aa", 
+                    borderRadius: "0.75rem",
+                    marginTop: "2rem"
+                }}>
+                    <h2 style={{ fontSize: "1.8rem" }}>Ups, tuvimos un problema</h2>
+                    <p>{errorGlobal}</p>
+                    
+                    <button 
+                        className="btn-detalles" 
+                        style={{ width: "auto", padding: "0.75rem 1.5rem", marginTop: "1rem" }} 
+                        onClick={() => fetchMascotas()}
+                    >
+                        Intentar cargar de nuevo
+                    </button>
+                </div>
+            )}
                 
                 {cargando ? (
                     <p>Cargando lista de mascotas...</p>
