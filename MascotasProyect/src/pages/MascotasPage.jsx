@@ -7,10 +7,12 @@ function MascotasPage(){
 
     const [mascotasList, setmascotaList] = useState([]);
     const [errorGlobal, setErrorGlobal] = useState(""); // Estado para errores de carga
-    
+    const [cargando, setCargando] = useState(true);
     //Traemos los datos con fecth
     const fetchMascotas = async ()  => {
         try{
+            setErrorGlobal("");
+            setCargando(true);
             //Peticion get
             const response = await apiMascotas.get("mascotas/");
             console.log(response);
@@ -28,6 +30,8 @@ function MascotasPage(){
             } else {
                 setErrorGlobal("Ocurrió un error inesperado al cargar la lista de mascotas.");
             }
+        }finally {
+            setCargando(false); //Lo apagamos siempre al terminar
         }
     }
 
@@ -65,7 +69,13 @@ function MascotasPage(){
             <h1>Pagina Mascotas</h1>
             {errorGlobal && <p>{errorGlobal}</p>}
             <MascotasForm onAdd={fetchMascotas}/>
-            <MascotasList  lista={mascotasList} onDelete={eliminarMascota}/>
+
+            {/*Mostramos el mensaje o la lista dependiendo de "cargando" */}
+            {cargando ? (
+                <p>Cargando lista de mascotas...</p>
+            ) : (
+                <MascotasList lista={mascotasList} onDelete={eliminarMascota} />
+            )}
 
         </article>
     )}

@@ -4,8 +4,13 @@ import { validarDatosComentario } from "../utils/validations";
 
 // Recibe el ID de la mascota y una función para actualizar la lista
 function ComentarioForm({ mascotaId, onComentarioAgregado }) {
-    const [autor, setAutor] = useState("");
-    const [contenido, setContenido] = useState("");
+    
+    //Unifica el estado en datos para que la validación funcione
+    const [datos, setDatos] = useState({
+        autor: "",
+        contenido: ""
+    });
+
     const [errores, setErrores] = useState({});
 
     const handleSubmit = async (e) => {
@@ -26,27 +31,33 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
             };
 
             // Hacemos el POST
-            const response = await apiMascotas.post("comentarios/", nuevoComentario);
+            const response = await apiMascotas.post("comentarios/", datosAEnviar);
 
             if (response.status === 201) {
                 //Limpiamos las cajas de texto
-                setAutor("");
-                setContenido("");
+                setDatos({ autor: "", contenido: "" }); // Limpiamos
                 setErrores({});
                 
                 //Le avisamos a la lista que vuelva a pedir los datos a la API
                 onComentarioAgregado();
             }
         } catch (error) {
-            console.log("Error al cargar datos:", error);
+            console.log("Error al enviar comentario:", error);
             
             const status = error.response?.status;
+            const data = error.response?.data;
 
-            if (status === 404) {
-                setError("La información solicitada ya no existe (Error 404).");
-            } 
-            else {
-                setError("No pudimos conectarnos al servidor. Revisa tu conexión a internet.");
+            // 4. Corregido: Manejo de errores unificado con setErrores
+            if (status === 400) {
+                const erroresDelServidor = {};
+                for (const campo in data) {
+                    erroresDelServidor[campo] = data[campo][0];
+                }
+                setErrores(erroresDelServidor);
+            } else if (status === 404) {
+                setErrores({ general: "La mascota ya no existe (Error 404)." });
+            } else {
+                setErrores({ general: "No pudimos conectarnos al servidor. Revisa tu conexión a internet." });
             }
         }
     };
@@ -61,8 +72,8 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
                     <label >Autor:</label>
                     <input
                         type="text"
-                        value={autor}
-                        onChange={(e) => setAutor(e.target.value)}
+                        value={datos.autor}
+                        onChange={(e) => setDatos({...datos, autor: e.target.value})}
                     />
                 {errores.autor && <p>{errores.autor}</p>}
                 </div>
@@ -71,8 +82,8 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
                     <label>Comentario:</label>
                     <br />
                     <textarea
-                        value={contenido}
-                        onChange={(e) => setContenido(e.target.value)}
+                        value={datos.contenido}
+                        onChange={(e) => setDatos({...datos, contenido: e.target.value})}
                         placeholder="Escribe tu comentario aquí..."
                         rows="3"
                     />
