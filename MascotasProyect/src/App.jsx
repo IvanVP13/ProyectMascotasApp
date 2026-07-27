@@ -12,9 +12,6 @@ function App() {
             <li>
               <NavLink to="/">Mascotas</NavLink>
             </li>
-            <li>
-              <NavLink to="/detalles">Detalles</NavLink>
-            </li>
           </ul>
         </nav>
       </header>

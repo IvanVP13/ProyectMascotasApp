@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import { validarDatosMascota } from "../utils/validations";
+import apiMascotas from "../api/apiMascotas";
 //Recibe onAdd como prop
 function MascotasForm ({onAdd}){
 
@@ -15,24 +16,10 @@ function MascotasForm ({onAdd}){
 
     //Funcion para revisar que ningun campo este vacio
     const validarFormulario = () => {
-        const nuevosErrores = {};
+        const nuevosErrores = validarDatosMascota(datos, true, imagen);
         
-        //validar edad
-        if (!datos.edad.toString().trim()) {
-            nuevosErrores.edad = "La edad es obligatoria.";
-        } else if (Number(datos.edad) < 0 || Number(datos.edad) > 30) {
-            nuevosErrores.edad = "Por favor ingresa una edad real (entre 0 y 30).";
-        }
-
-        // .trim() elimina espacios. Si queda vacio lanza error.
-        if (!datos.nombre.trim()) nuevosErrores.nombre = "El nombre es obligatorio.";
-        if (!datos.raza.trim()) nuevosErrores.raza = "La raza es obligatoria.";
-        if (!datos.descripcion.trim()) nuevosErrores.descripcion = "La descripción es obligatoria.";
-        if (!imagen) nuevosErrores.imagen = "Debe adjuntar una imagen.";
-
         setErrores(nuevosErrores);
-
-        //Si el objeto nuevosErrores no tiene claves, significa que no hay errores (retorna true)
+        // Retorna true si el objeto está vacío (0 errores)
         return Object.keys(nuevosErrores).length === 0;
     }
 
@@ -52,32 +39,44 @@ function MascotasForm ({onAdd}){
             formularioData.append("imagen", imagen);
         }
 
-        //Ejecutamos la funcion del padre y pasamos datos
-        const respuesta = await onAdd(formularioData);
-
-        if (respuesta && !respuesta.exito && respuesta.erroresBackend) {
-            const errAPI = respuesta.erroresBackend;
-            // Usamos operador ternario para evitar que se caiga
-            // Si el api no manda error de 'nombre', simplemente queda en blanco ("")
-            setErrores({
-                nombre: errAPI?.nombre?.[0] || "",
-                edad: errAPI?.edad?.[0] || "",
-                raza: errAPI?.raza?.[0] || "",
-                descripcion: errAPI?.descripcion?.[0] || "",
-                imagen: errAPI?.imagen?.[0] || ""
-            });
+        try {
+            // Hacemos la petición POST directamente desde el formulario
+            const response = await apiMascotas.post('mascotas/', formularioData);
             
-            return; // Detenemos la ejecucion
-        }
+            // Si la mascota se creo con exito
+            if (response.status === 201) {
+                // Limpiamos el formulario
+                setDatos({
+                    nombre: "", descripcion: "", estado: "en_adopcion", tipo_animal: "perro",
+                    edad: "", raza: "", sexo: "desconocido", tamano: "desconocido"
+                });
+                setImagen(null);
+                setErrores({});
+                
+                // Le avisamos al componente padre que recargue la lista
+                if (onAdd) onAdd(); 
+            }
+        } catch (error) {
+            console.log("Error técnico recibido:", error);
 
-        //Limpiamos si fue exito el formulario para la siguiente mascota
-        if (respuesta && respuesta.exito) {
-            setDatos({
-                nombre: "", descripcion: "", estado: "en_adopcion", tipo_animal: "perro",
-                edad: "", raza: "", sexo: "desconocido", tamano: "desconocido"
-            });
-            setImagen(null);
-            setErrores({});
+            // Uso de encadenamiento opcional
+            const status = error.response?.status;
+            const data = error.response?.data;
+
+            if (status === 400) {
+                // Error 400 Validación del Back-End
+                const erroresDelServidor = {};
+                
+                for (const campo in data) {
+                    erroresDelServidor[campo] = data[campo][0];
+                }
+                
+                setErrores(erroresDelServidor);
+            } 
+            else {
+                // Error general (Servidor caido, sin internet, etc.)
+                setErrores({ general: "Ocurrió un error inesperado al intentar publicar. Por favor, intenta de nuevo." });
+            }
         }
     };
     return(
@@ -192,7 +191,7 @@ function MascotasForm ({onAdd}){
                     />
                     {errores.imagen && <p>{errores.imagen}</p>}
                 </div>
-                
+                {errores.general && <p>{errores.general}</p>}
                 <button type="submit">Publicar Mascota</button>
             </form>
         </>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import apiMascotas from "../api/apiMascotas";
+import { validarDatosMascota } from "../utils/validations";
 
 function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
     // Inicializamos el estado con los datos actuales de la mascota
@@ -15,33 +16,20 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
     });
     
     const [imagen, setImagen] = useState(null);
-    const [error, setError] = useState("");
+    const [errores, setErrores] = useState({}); //objetovacio
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        //validaciones
-        if (!datos.nombre.trim()) {
-            setError("El nombre no puede estar vacío o contener solo espacios.");
-            return;
-        }
+        setErrores({}); //Limpia erroes
 
-        // Convertimos a texto por si acaso y validamos
-        if (!String(datos.edad).trim() || Number(datos.edad) < 0 || Number(datos.edad) > 30 ) {
-            setError("Por favor, ingresa una edad real (aproximada).");
-            return;
+        //validamos
+        // Le pasamos false porque editar la imagen es opcional
+        const nuevosErrores = validarDatosMascota(datos, false, imagen);
+        // Si el objeto de errores tiene claves , hay errores
+        if (Object.keys(nuevosErrores).length > 0) {
+            setErrores(nuevosErrores);
+            return; // Detenemos el envío
         }
-
-        if (!datos.raza.trim()) {
-            setError("La raza no puede estar vacía.");
-            return;
-        }
-
-        if (!datos.descripcion.trim()) {
-            setError("La descripción no puede estar vacía.");
-            return;
-        }
-
         // Usamos FormData porque podríamos estar enviando un archivo de imagen
         const formData = new FormData();
         for (const clave in datos) {
@@ -62,13 +50,37 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
             }
         } catch (error) {
             console.log("Error al editar:", error);
-            setError("Ocurrió un error al actualizar los datos.");
+            
+            const status = error.response?.status;
+            const data = error.response?.data;
+
+            //Diferenciamos los tipos de errores
+            if (status === 400) {
+                // Ejemplo: { nombre: ["Asegúrese de que este campo no tenga más de 100 caracteres."] }
+                const erroresDelServidor = {};
+                
+                for (const campo in data) {
+                    // Tomamos el primer mensaje de error de cada campo y lo traducimos a nuestra interfaz
+                    erroresDelServidor[campo] = data[campo][0];
+                }
+                
+                // Esto hará que el texto rojo del Back-End aparezca justo debajo del input correspondiente
+                setErrores(erroresDelServidor);
+            } 
+            else if (status === 404) {
+                // Error 404 (No Encontrado)
+                setErrores({ general: "Error 404: No se pudo actualizar. La mascota ya no existe en el sistema." });
+            } 
+            else {
+                // 3. Evitamos mostrar mensajes técnicos
+                setErrores({ general: "Ocurrió un error inesperado de conexión. Por favor, intenta más tarde." });
+            }
         }
     };
 
     return (
         <div>
-            <h3>Editar datos de {mascota.nombre}</h3>
+            <h3>Editar datos de: {mascota.nombre}</h3>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Nombre: </label>
@@ -78,6 +90,7 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
                         onChange={(e) => setDatos({...datos, nombre: e.target.value})} 
                         
                     />
+                    {errores.nombre && <p>{errores.nombre}</p>}
                 </div>
 
                 <div>
@@ -87,7 +100,8 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
                         value={datos.edad}
                         onChange={(e) => setDatos({...datos, edad: e.target.value})} 
                         
-                    />
+                    />Edad aproximada en años, si se conoce
+                    {errores.edad && <p>{errores.edad}</p>}
                 </div>
 
                 <div>
@@ -98,6 +112,7 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
                         onChange={(e) => setDatos({...datos, raza: e.target.value})} 
                         
                     />
+                    {errores.raza && <p>{errores.raza}</p>}
                 </div>
 
                 <div>
@@ -107,6 +122,7 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
                         onChange={(e) => setDatos({...datos, descripcion: e.target.value})} 
                         
                     />
+                    {errores.descripcion && <p>{errores.descripcion}</p>}
                 </div>
 
                 <div>
@@ -157,9 +173,10 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
                         accept="image/*" 
                         onChange={(e) => setImagen(e.target.files[0])} 
                     />
+                    {errores.imagen && <p>{errores.imagen}</p>}
                 </div>
 
-                {error && <p>{error}</p>}
+                {errores.general && <p><strong>{errores.general}</strong></p>}
 
                 <div>
                     <button type="submit">Guardar Cambios</button>
