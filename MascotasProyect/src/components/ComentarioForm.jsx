@@ -63,34 +63,39 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
     };
 
     return (
-        <div >
-            <h4>Dejar un comentario</h4>
+        <div className="comentarios-contenedor">
+            <h4 className="comentarios-titulo">Dejar un comentario</h4>
             
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit} className="comentario-formulario-tarjeta">
                 
-                <div>
-                    <label >Autor:</label>
+                {/* 1. Campo de Autor arriba */}
+                <div className="comentario-grupo-autor">
                     <input
                         type="text"
                         value={datos.autor}
                         onChange={(e) => setDatos({...datos, autor: e.target.value})}
+                        placeholder="Tu nombre o autor..."
                     />
-                {errores.autor && <p>{errores.autor}</p>}
+                    {errores.autor && <p style={{ color: "#e53e3e", fontSize: "0.85rem", marginTop: "0.25rem" }}>{errores.autor}</p>}
                 </div>
                 
-                <div>
-                    <label>Comentario:</label>
-                    <br />
+                {/* 2. Textarea de Contenido en medio */}
+                <div className="comentario-grupo-contenido">
                     <textarea
                         value={datos.contenido}
                         onChange={(e) => setDatos({...datos, contenido: e.target.value})}
                         placeholder="Escribe tu comentario aquí..."
                         rows="3"
                     />
-                {errores.contenido && <p>{errores.contenido}</p>}
+                    {errores.contenido && <p style={{ color: "#e53e3e", fontSize: "0.85rem", marginTop: "0.25rem" }}>{errores.contenido}</p>}
                 </div>
-                {errores.general && <p>{errores.general}</p>}
-                <button type="submit">Publicar</button>
+
+                {errores.general && <p style={{ color: "#e53e3e", fontSize: "0.85rem" }}>{errores.general}</p>}
+
+                {/* 3. Botón Publicar abajo a la izquierda */}
+                <button type="submit" className="btn-detalles">
+                    Publicar
+                </button>
             </form>
         </div>
     );

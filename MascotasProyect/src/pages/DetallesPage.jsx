@@ -54,67 +54,91 @@ function DetallesPage({}) {
     if (!mascota) return <p>Mascota no encontrada.</p>;
 
     return (
-         
-        <article>
-            <button onClick={() => navigate(-1)}>Volver a Inicio</button>
-            
-            {editando ? (
-                // Mostramos el formulario
-                <EditarMascotaForm 
-                    mascota={mascota} 
-                    onCancel={() => setEditando(false)} 
-                    onSuccess={() => {
-                        setEditando(false); // Ocultamos el formulario
-                        fetchDetalle(); // Pedimos los datos frescos a la API
-                    }} 
-                />
-            ) : (
-                // Mostramos los detalles
-                <div>
-                    {/* Botón para activar la edición */}
-                    <button onClick={() => setEditando(true)} style={{ marginTop: "10px" }}>
-                        Editar Mascota
+        <div className="detalle-contenedor">
+            <article className="detalle-tarjeta-principal">
+                
+                {/* Barra superior con Volver y Editar separados */}
+                <div className="detalle-barra-superior">
+                    <button className="btn-regresar" onClick={() => navigate(-1)}>
+                        ← Volver
                     </button>
-                {/*Seccion de la mascota */}
-                <h2>Nombre: {formatLabel(mascota.nombre)}</h2>
                     
-                    <ul>
-                        <li><strong>Tipo:</strong> {formatLabel(mascota.tipo_animal)}</li>
-                        <li><strong>Raza:</strong> {formatLabel(mascota.raza)}</li>
-                        <li><strong>Edad:</strong> {mascota.edad} (años aproximados)</li>
-                        <li><strong>Sexo:</strong> {formatLabel(mascota.sexo)}</li>
-                        <li><strong>Tamaño:</strong> {formatLabel(mascota.tamano)}</li>
-                        <li><strong>Estado:</strong> {formatLabel(mascota.estado)}</li>
-                    </ul>
-
-                    <p><strong>Descripción completa:</strong></p>
-                    <p>{formatLabel(mascota.descripcion)}</p>
-                    
-                    {mascota.imagen && (
-                        <div>
-                            <img src={mascota.imagen} 
-                            alt={`Imagen de ${mascota.nombre}`} 
-                            width={330} />
-                        </div>
+                    {!editando && (
+                        <button className="btn-detalles btn-editar" onClick={() => setEditando(true)}>
+                            ✏️ Editar Mascota
+                        </button>
                     )}
-
-                    <div>
-                        <p><small><strong>Fecha de registro:</strong> {mascota.fecha_creacion ? new Date(mascota.fecha_creacion).toLocaleString() : "N/A"}</small></p>
-                        <p><small><strong>Última actualización:</strong> {mascota.fecha_actualizacion ? new Date(mascota.fecha_actualizacion).toLocaleString() : "N/A"}</small></p>
-                    </div>
                 </div>
-            )}
+                
+                {editando ? (
+                    <EditarMascotaForm 
+                        mascota={mascota} 
+                        onCancel={() => setEditando(false)} 
+                        onSuccess={() => {
+                            setEditando(false);
+                            fetchDetalle();
+                        }} 
+                    />
+                ) : (
+                    <div className="detalle-grid-contenido">
+                        
+                        {/* Columna Izquierda: Imagen con tamaño controlado */}
+                        <div>
+                            {mascota.imagen ? (
+                                <div className="detalle-imagen-contenedor">
+                                    <img src={mascota.imagen} alt={`Imagen de ${mascota.nombre}`} />
+                                </div>
+                            ) : (
+                                <div className="detalle-imagen-contenedor" style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "15rem", color: "#a0aec0" }}>
+                                    Sin imagen disponible
+                                </div>
+                            )}
+                        </div>
 
-            <hr />
-            {/* Si no esta editando, mostramos la linea y los comentarios */}
-            {!editando && (
-                <>
-                    <div>
+                        {/* Columna Derecha: Información detallada */}
+                        <div className="detalle-info-cuerpo">
+                            <div>
+                                
+                                <h1 className="detalle-titulo">
+                                    Ficha de: {formatLabel(mascota.nombre)} 
+                                    <span style={{ fontSize: "1rem", fontWeight: "normal", color: "#718096", marginLeft: "0.75rem" }}>
+                                        ({formatLabel(mascota.estado)})
+                                    </span>
+                                </h1>
+                                
+                                <ul className="detalle-grupo-datos">
+                                    <li className="detalle-item"><strong>Tipo:</strong> {formatLabel(mascota.tipo_animal)}</li>
+                                    <li className="detalle-item"><strong>Raza:</strong> {formatLabel(mascota.raza)}</li>
+                                    <li className="detalle-item"><strong>Edad:</strong> {mascota.edad} (años aproximados)</li>
+                                    <li className="detalle-item"><strong>Sexo:</strong> {formatLabel(mascota.sexo)}</li>
+                                    <li className="detalle-item"><strong>Tamaño:</strong> {formatLabel(mascota.tamano)}</li>
+                                    <li className="detalle-item"><strong>Estado:</strong> {formatLabel(mascota.estado)}</li>
+                                </ul>
+
+                                {mascota.descripcion && (
+                                    <div className="detalle-descripcion" style={{ marginTop: "1rem" }}>
+                                        <strong>Descripción completa:</strong>
+                                        <p style={{ marginTop: "0.25rem" }}>{formatLabel(mascota.descripcion)}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div style={{ borderTop: "0.0625rem solid #edf2f7", paddingTop: "1rem", marginTop: "0.5rem" }}>
+                                <p><small style={{ color: "#a0aec0" }}><strong>Fecha de registro:</strong> {mascota.fecha_creacion ? new Date(mascota.fecha_creacion).toLocaleString() : "N/A"}</small></p>
+                                <p><small style={{ color: "#a0aec0" }}><strong>Última actualización:</strong> {mascota.fecha_actualizacion ? new Date(mascota.fecha_actualizacion).toLocaleString() : "N/A"}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Sección de Comentarios */}
+                {!editando && (
+                    <div style={{ marginTop: "2.5rem", borderTop: "0.125rem solid #edf2f7", paddingTop: "1.5rem" }}>
                         <ComentariosList mascotaId={mascota.id} />
                     </div>
-                </>
-            )}
-        </article>
+                )}
+            </article>
+        </div>
     );
 }
 

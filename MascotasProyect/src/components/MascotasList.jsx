@@ -6,9 +6,7 @@ function MascotasList({lista, onDelete}){
     const navigate = useNavigate();
 
 return (
-        <div className="mascotas-container">
-            <h2>Lista de Mascotas</h2>
-            
+        <div className="mascotas-container">            
             {lista.length === 0 ? (
                 <p>No hay mascotas registradas actualmente.</p>
             ) : (

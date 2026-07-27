@@ -8,7 +8,14 @@ function App() {
     <>
       <header>
         <nav>
-          <ul>
+          {/* Lado izquierdo: Título de la comunidad o refugio */}
+          <NavLink to="/" className="nav-brand">
+              <span>🐾</span>
+              <h1>Red de Mascotas</h1>
+          </NavLink>
+
+          {/* Lado derecho: Enlaces de navegación originales */}
+          <ul className="nav-menu">
             <li>
               <NavLink to="/">Mascotas</NavLink>
             </li>

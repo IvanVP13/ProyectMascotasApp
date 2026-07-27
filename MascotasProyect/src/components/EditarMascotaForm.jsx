@@ -79,112 +79,124 @@ function EditarMascotaForm({ mascota, onCancel, onSuccess }) {
     };
 
     return (
-        <div>
-            <h3>Editar datos de: {mascota.nombre}</h3>
+        <div className="editar-formulario-contenedor">
+            <h3 className="editar-formulario-titulo">Actualizar información de: {mascota.nombre}</h3>
+            
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre: </label>
-                    <input 
-                        type="text" 
-                        value={datos.nombre}
-                        onChange={(e) => setDatos({...datos, nombre: e.target.value})} 
-                        
-                    />
-                    {errores.nombre && <p>{errores.nombre}</p>}
+                <div className="editar-formulario-grid">
+                    
+                    {/* Nombre */}
+                    <div className="editar-grupo-campo">
+                        <label>Nombre: </label>
+                        <input 
+                            type="text" 
+                            value={datos.nombre}
+                            onChange={(e) => setDatos({...datos, nombre: e.target.value})} 
+                        />
+                        {errores.nombre && <span className="editar-error-texto">{errores.nombre}</span>}
+                    </div>
+
+                    {/* Edad */}
+                    <div className="editar-grupo-campo">
+                        <label>Edad: </label>
+                        <input 
+                            type="number" 
+                            value={datos.edad}
+                            onChange={(e) => setDatos({...datos, edad: e.target.value})} 
+                        />
+                        <span className="editar-ayuda-texto">Edad aproximada en años, si se conoce</span>
+                        {errores.edad && <span className="editar-error-texto">{errores.edad}</span>}
+                    </div>
+
+                    {/* Raza */}
+                    <div className="editar-grupo-campo">
+                        <label>Raza: </label>
+                        <input 
+                            type="text" 
+                            value={datos.raza}
+                            onChange={(e) => setDatos({...datos, raza: e.target.value})} 
+                        />
+                        {errores.raza && <span className="editar-error-texto">{errores.raza}</span>}
+                    </div>
+
+                    {/* Estado */}
+                    <div className="editar-grupo-campo">
+                        <label>Estado: </label>
+                        <select value={datos.estado} onChange={(e) => setDatos({...datos, estado: e.target.value})}>
+                            <option value="encontrada">Encontrada</option>
+                            <option value="perdida">Perdida</option>
+                            <option value="adoptada">Adoptada</option>
+                            <option value="en_adopcion">En adopción</option>
+                        </select>
+                    </div>
+
+                    {/* Tipo de Animal */}
+                    <div className="editar-grupo-campo">
+                        <label>Tipo de Animal: </label>
+                        <select value={datos.tipo_animal} onChange={(e) => setDatos({...datos, tipo_animal: e.target.value})}>
+                            <option value="perro">Perro</option>
+                            <option value="gato">Gato</option>
+                            <option value="roedor">Roedor</option>
+                            <option value="reptil">Reptil</option>
+                            <option value="ave">Ave</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    {/* Sexo */}
+                    <div className="editar-grupo-campo">
+                        <label>Sexo: </label>
+                        <select value={datos.sexo} onChange={(e) => setDatos({...datos, sexo: e.target.value})}>
+                            <option value="hembra">Hembra</option>
+                            <option value="macho">Macho</option>
+                            <option value="desconocido">Desconocido</option>
+                        </select>
+                    </div>
+
+                    {/* Tamaño */}
+                    <div className="editar-grupo-campo">
+                        <label>Tamaño: </label>
+                        <select value={datos.tamano} onChange={(e) => setDatos({...datos, tamano: e.target.value})}>
+                            <option value="pequeno">Pequeño</option>
+                            <option value="mediano">Mediano</option>
+                            <option value="grande">Grande</option>
+                            <option value="desconocido">Desconocido</option>
+                        </select>
+                    </div>
+
+                    {/* Actualizar Imagen (Opcional) - Ancho completo */}
+                    <div className="editar-grupo-campo editar-campo-completo">
+                        <label>Actualizar Imagen (Opcional): </label>
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => setImagen(e.target.files[0])} 
+                        />
+                        {errores.imagen && <span className="editar-error-texto">{errores.imagen}</span>}
+                    </div>
+
+                    {/* Descripción - Ancho completo */}
+                    <div className="editar-grupo-campo editar-campo-completo">
+                        <label>Descripción: </label>
+                        <textarea 
+                            value={datos.descripcion}
+                            onChange={(e) => setDatos({...datos, descripcion: e.target.value})} 
+                            rows="3"
+                        />
+                        {errores.descripcion && <span className="editar-error-texto">{errores.descripcion}</span>}
+                    </div>
+
                 </div>
 
-                <div>
-                    <label>Edad: </label>
-                    <input 
-                        type="number" 
-                        value={datos.edad}
-                        onChange={(e) => setDatos({...datos, edad: e.target.value})} 
-                        
-                    />Edad aproximada en años, si se conoce
-                    {errores.edad && <p>{errores.edad}</p>}
-                </div>
+                {errores.general && <p className="editar-error-texto" style={{ marginTop: "1rem" }}><strong>{errores.general}</strong></p>}
 
-                <div>
-                    <label>Raza: </label>
-                    <input 
-                        type="text" 
-                        value={datos.raza}
-                        onChange={(e) => setDatos({...datos, raza: e.target.value})} 
-                        
-                    />
-                    {errores.raza && <p>{errores.raza}</p>}
-                </div>
-
-                <div>
-                    <label>Descripción: </label>
-                    <textarea 
-                        value={datos.descripcion}
-                        onChange={(e) => setDatos({...datos, descripcion: e.target.value})} 
-                        
-                    />
-                    {errores.descripcion && <p>{errores.descripcion}</p>}
-                </div>
-
-                <div>
-                    <label>Estado: </label>
-                    <select value={datos.estado} onChange={(e) => setDatos({...datos, estado: e.target.value})}>
-                        <option value="encontrada">Encontrada</option>
-                        <option value="perdida">Perdida</option>
-                        <option value="adoptada">Adoptada</option>
-                        <option value="en_adopcion">En adopción</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Tipo de Animal: </label>
-                    <select value={datos.tipo_animal} onChange={(e) => setDatos({...datos, tipo_animal: e.target.value})}>
-                        <option value="perro">Perro</option>
-                        <option value="gato">Gato</option>
-                        <option value="roedor">Roedor</option>
-                        <option value="reptil">Reptil</option>
-                        <option value="ave">Ave</option>
-                        <option value="otro">Otro</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Sexo: </label>
-                    <select value={datos.sexo} onChange={(e) => setDatos({...datos, sexo: e.target.value})}>
-                        <option value="hembra">Hembra</option>
-                        <option value="macho">Macho</option>
-                        <option value="desconocido">Desconocido</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Tamaño: </label>
-                    <select value={datos.tamano} onChange={(e) => setDatos({...datos, tamano: e.target.value})}>
-                        <option value="pequeno">Pequeño</option>
-                        <option value="mediano">Mediano</option>
-                        <option value="grande">Grande</option>
-                        <option value="desconocido">Desconocido</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Actualizar Imagen (Opcional): </label>
-                    <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={(e) => setImagen(e.target.files[0])} 
-                    />
-                    {errores.imagen && <p>{errores.imagen}</p>}
-                </div>
-
-                {errores.general && <p><strong>{errores.general}</strong></p>}
-
-                <div>
-                    <button type="submit">Guardar Cambios</button>
-                    <button type="button" onClick={onCancel}>Cancelar</button>
+                {/* Botonera de acciones */}
+                <div className="editar-acciones">
+                    <button type="button" className="btn-cancelar" onClick={onCancel}>Cancelar</button>
+                    <button type="submit" className="btn-guardar">Guardar Cambios</button>
                 </div>
             </form>
         </div>
     );
 }
-
 export default EditarMascotaForm;
