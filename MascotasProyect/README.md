@@ -73,3 +73,24 @@ Diferenciación de Estados de Error: Separación estricta entre la variable nati
 Early Returns (Retornos tempranos): Uso de return; en las funciones handleSubmit para detener la ejecución del código inmediatamente si las validaciones del Front-End fallan.
 
 Delegación de Responsabilidades: Se independizaron los formularios (MascotasForm, EditarMascotaForm) para que gestionen sus propias peticiones HTTP y errores, limpiando drásticamente el código de los componentes padres (MascotasPage).
+
+## Diseño e Interfaz de Usuario (UI/UX)
+
+Para garantizar una experiencia cálida, amigable y responsiva en "Red de Mascotas", el proyecto implementa un sistema de diseño propio apoyado por las siguientes herramientas:
+
+### Dependencias Clave
+*   **[Notyf](https://carlosjeurissen.com/notyf/):** Sistema de notificaciones *toast* no bloqueantes. Se utiliza para proveer *feedback* inmediato y elegante al usuario tras acciones exitosas (creación/edición de mascotas) o para capturar errores de la API.
+*   **[SweetAlert2](https://sweetalert2.github.io/):** Reemplaza los cuadros de diálogo nativos del navegador por ventanas modales modernas y personalizables. Se emplea principalmente para confirmar acciones destructivas (como eliminar registros de mascotas o comentarios).
+*   **[React Icons](https://react-icons.github.io/react-icons/):** Integración de iconografía vectorial (específicamente la colección *Feather Icons*). Permite mantener una interfaz limpia y libre de texto excesivo en los botones de acción (ej. `FiTrash2` para eliminación).
+
+### Paleta de Colores
+El proyecto empezo por colores corporativos tradicionales y evoliciono en favor de una paleta cálida que transmite empatía y cercanía:
+*   **Primario (Naranja - `#dd6b20`):** Usado en títulos, botones principales, íconos de advertencia y notificaciones de éxito.
+*   **Destructivo (Rojo Ladrillo - `#dc2626`):** Reservado estrictamente para la confirmación de eliminación y alertas de error crítico.
+*   **Secundario (Ámbar - `#d97706`):** Utilizado para botones de cancelación e información.
+*   **Fondos (Crema Suave - `#fffaf0`):** Aplicado en tarjetas de contenido, modales y mensajes de estado para dar aspecto de tarjeta física y reducir la fatiga visual.
+*   **Texto Contraste (`#2d3748` / `#4a5568`):** Tonos oscuros para asegurar la máxima accesibilidad y legibilidad.
+
+### Arquitectura de Estilos
+*   **Centralización:** Las configuraciones visuales de las librerías externas están modularizadas en `src/utils/notificaciones.js` y `src/utils/alertas.js` para facilitar el mantenimiento y la escalabilidad del diseño.
+*   **Flexbox:** Uso intensivo de Flexbox en `index.css` (ej. clase `.error-404-contenedor`) para garantizar el centrado perfecto y la adaptabilidad de componentes de estado (pantallas de error, listas vacías y *loaders*).
