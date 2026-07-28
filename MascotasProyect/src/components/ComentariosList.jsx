@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiMascotas from "../api/apiMascotas";
 import ComentarioForm from "./ComentarioForm";
+import { notyf } from "../utils/notificaciones";
 
 function ComentariosList({ mascotaId }) {
     const [comentarios, setComentarios] = useState([]);
@@ -45,6 +46,7 @@ function ComentariosList({ mascotaId }) {
             
             // 204 (Eliminado con éxito)
             if (response.status === 204) {
+                notyf.success("Comentario eliminado correctamente.");
                 // Volvemos a pedir los comentarios a la API para que desaparezca de la pantalla
                 fetchComentarios();
             }
@@ -52,9 +54,9 @@ function ComentariosList({ mascotaId }) {
             console.log("Error al eliminar el comentario:", error);
             const status = error.response?.status;
             if (status === 404) {
-                setError("Error 404: El comentario ya fue eliminado por otra persona o no existe.");
+                notyf.error("El comentario ya fue eliminado o no existe.");
             } else {
-                setError("Ocurrió un error al intentar eliminar el comentario. Intenta más tarde.");
+                notyf.error("Ocurrió un error al intentar eliminar. Intenta más tarde.");
             }
         }
     };

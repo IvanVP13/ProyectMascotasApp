@@ -4,6 +4,7 @@ import apiMascotas from "../api/apiMascotas";
 import ComentariosList from "../components/ComentariosList";
 import { formatLabel } from "../utils/formatters";
 import EditarMascotaForm from "../components/EditarMascotaForm";
+import { notyf } from "../utils/notificaciones";
 
 // Asumiendo que este componente recibe la 'mascota' actual
 function DetallesPage({}) {
@@ -44,10 +45,16 @@ function DetallesPage({}) {
     if (cargando) return <p>Cargando detalles...</p>;
     if (error404) {
         return (
-            <div>
-                <h2>Error 404: Mascota no encontrada</h2>
-                <p>Parece que el registro que buscas no existe o fue eliminado recientemente.</p>
-                <button onClick={() => navigate("/")}>Volver al listado principal</button>
+            <div className="error-404-contenedor">
+                <h2>Error 404</h2>
+                <p>Mascota no encontrada. Parece que el registro que buscas no existe o fue eliminado recientemente.</p>
+                <button 
+                    className="btn-detalles" 
+                    style={{ width: "auto", padding: "0.75rem 1.5rem", flex: "none" }} 
+                    onClick={() => navigate("/")}
+                >
+                    Volver al listado principal
+                </button>
             </div>
         );
     }
@@ -65,7 +72,7 @@ function DetallesPage({}) {
                     
                     {!editando && (
                         <button className="btn-detalles btn-editar" onClick={() => setEditando(true)}>
-                            ✏️ Editar Mascota
+                             Editar Mascota
                         </button>
                     )}
                 </div>
@@ -76,6 +83,7 @@ function DetallesPage({}) {
                         onCancel={() => setEditando(false)} 
                         onSuccess={() => {
                             setEditando(false);
+                            notyf.success("¡Datos de la mascota actualizados correctamente!");
                             fetchDetalle();
                         }} 
                     />

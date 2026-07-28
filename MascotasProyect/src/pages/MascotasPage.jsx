@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import MascotasList from "../components/MascotasList";
 import apiMascotas from "../api/apiMascotas";
 import MascotasForm from "../components/MascotasForm";
-
+import { notyf } from "../utils/notificaciones";
+import { confirmarEliminacion } from "../utils/alertas";
 function MascotasPage(){
 
     const [mascotasList, setmascotaList] = useState([]);
@@ -40,27 +41,29 @@ function MascotasPage(){
     // Peticion DELETE
     const eliminarMascota = async (id) => {
         //Preguntamos al usuario para evitar borrados por accidente
-        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
-        if (!confirmar) return;
+        const confirmado = await confirmarEliminacion('mascota');
+        
+        // Si el usuario presiona "Cancelar", detenemos la función aquí
+        if (!confirmado) return;
 
         try {
             // Pasamos el ID en la URL
             const response = await apiMascotas.delete(`mascotas/${id}/`);
             
             if (response.status === 204) {
-                alert("Mascota eliminada correctamente.");
+                notyf.success("Mascota eliminada correctamente.");
                 fetchMascotas(); // Volvemos a pedir la lista para que desaparezca
             }
         } catch (error) {
             console.log("Error al eliminar:", error);
-            
-            // Aplicamos rúbrica
             const status = error.response?.status;
+            
             if (status === 404) {
-                alert("Error 404: La mascota ya no existe o fue eliminada previamente.");
-                fetchMascotas(); // Recargamos para que desaparezca visualmente
+                // 3. Reemplazamos el alert() de error
+                notyf.error("La mascota ya no existe o fue eliminada.");
+                fetchMascotas();
             } else {
-                alert("Ocurrió un error de conexión al intentar eliminar la mascota.");
+                notyf.error("Ocurrió un error de conexión al intentar eliminar.");
             }
         }
     };
@@ -78,7 +81,26 @@ function MascotasPage(){
             <main className="dashboard-main">
                 <h1>Directorio de Mascotas</h1>
                 
-                {errorGlobal && <p style={{color: 'red', fontWeight: 'bold'}}>{errorGlobal}</p>}
+                {errorGlobal && (
+                <div className="error-404-contenedor" style={{ 
+                    minHeight: "30vh", 
+                    backgroundColor: "#fffaf0", 
+                    border: "0.125rem dashed #fed7aa", 
+                    borderRadius: "0.75rem",
+                    marginTop: "2rem"
+                }}>
+                    <h2 style={{ fontSize: "1.8rem" }}>Ups, tuvimos un problema</h2>
+                    <p>{errorGlobal}</p>
+                    
+                    <button 
+                        className="btn-detalles" 
+                        style={{ width: "auto", padding: "0.75rem 1.5rem", marginTop: "1rem" }} 
+                        onClick={() => fetchMascotas()}
+                    >
+                        Intentar cargar de nuevo
+                    </button>
+                </div>
+            )}
                 
                 {cargando ? (
                     <p>Cargando lista de mascotas...</p>

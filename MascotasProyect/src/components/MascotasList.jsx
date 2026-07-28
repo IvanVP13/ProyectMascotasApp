@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { formatLabel } from "../utils/formatters";
-
+import { FiTrash2 } from "react-icons/fi";
 function MascotasList({lista, onDelete}){
     //inicializa un gancho
     const navigate = useNavigate();
@@ -44,10 +44,17 @@ return (
                                     Ver Detalles
                                 </button>
                                 <button 
-                                    className="btn-eliminar" 
+                                    className="btn-eliminar"
                                     onClick={() => onDelete(mascota.id)}
+                                    title="Eliminar mascota"
+                                    style={{ 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        padding: "0.5rem 0.75rem" 
+                                    }}
                                 >
-                                    Eliminar
+                                    <FiTrash2 size={20} />
                                 </button>
                             </div>
                             
