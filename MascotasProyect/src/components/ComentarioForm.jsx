@@ -1,7 +1,7 @@
 import { useState } from "react";
 import apiMascotas from "../api/apiMascotas";
 import { validarDatosComentario } from "../utils/validations";
-
+import { notyf } from "../utils/notificaciones";
 // Recibe el ID de la mascota y una función para actualizar la lista
 function ComentarioForm({ mascotaId, onComentarioAgregado }) {
     
@@ -35,6 +35,7 @@ function ComentarioForm({ mascotaId, onComentarioAgregado }) {
 
             if (response.status === 201) {
                 //Limpiamos las cajas de texto
+                notyf.success("¡Comentario publicado con éxito!");
                 setDatos({ autor: "", contenido: "" }); // Limpiamos
                 setErrores({});
                 

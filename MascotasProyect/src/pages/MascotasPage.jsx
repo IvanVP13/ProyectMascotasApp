@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import MascotasList from "../components/MascotasList";
 import apiMascotas from "../api/apiMascotas";
 import MascotasForm from "../components/MascotasForm";
-
+import { notyf } from "../utils/notificaciones";
 function MascotasPage(){
 
     const [mascotasList, setmascotaList] = useState([]);
@@ -48,18 +48,19 @@ function MascotasPage(){
             const response = await apiMascotas.delete(`mascotas/${id}/`);
             
             if (response.status === 204) {
-                alert("Mascota eliminada correctamente.");
+                notyf.success("Mascota eliminada correctamente.");
                 fetchMascotas(); // Volvemos a pedir la lista para que desaparezca
             }
         } catch (error) {
             console.log("Error al eliminar:", error);
-            
             const status = error.response?.status;
+            
             if (status === 404) {
-                alert("Error 404: La mascota ya no existe o fue eliminada previamente.");
-                fetchMascotas(); // Recargamos para que desaparezca visualmente
+                // 3. Reemplazamos el alert() de error
+                notyf.error("La mascota ya no existe o fue eliminada.");
+                fetchMascotas();
             } else {
-                alert("Ocurrió un error de conexión al intentar eliminar la mascota.");
+                notyf.error("Ocurrió un error de conexión al intentar eliminar.");
             }
         }
     };

@@ -4,6 +4,7 @@ import apiMascotas from "../api/apiMascotas";
 import ComentariosList from "../components/ComentariosList";
 import { formatLabel } from "../utils/formatters";
 import EditarMascotaForm from "../components/EditarMascotaForm";
+import { notyf } from "../utils/notificaciones";
 
 // Asumiendo que este componente recibe la 'mascota' actual
 function DetallesPage({}) {
@@ -82,6 +83,7 @@ function DetallesPage({}) {
                         onCancel={() => setEditando(false)} 
                         onSuccess={() => {
                             setEditando(false);
+                            notyf.success("¡Datos de la mascota actualizados correctamente!");
                             fetchDetalle();
                         }} 
                     />

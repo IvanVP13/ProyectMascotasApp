@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { validarDatosMascota } from "../utils/validations";
 import apiMascotas from "../api/apiMascotas";
+import { notyf } from "../utils/notificaciones";
 //Recibe onAdd como prop
 function MascotasForm ({onAdd}){
 
@@ -45,6 +46,7 @@ function MascotasForm ({onAdd}){
             
             // Si la mascota se creo con exito
             if (response.status === 201) {
+                notyf.success("¡Mascota publicada con éxito!");
                 // Limpiamos el formulario
                 setDatos({
                     nombre: "", descripcion: "", estado: "en_adopcion", tipo_animal: "perro",
