@@ -3,6 +3,7 @@ import MascotasList from "../components/MascotasList";
 import apiMascotas from "../api/apiMascotas";
 import MascotasForm from "../components/MascotasForm";
 import { notyf } from "../utils/notificaciones";
+import { confirmarEliminacion } from "../utils/alertas";
 function MascotasPage(){
 
     const [mascotasList, setmascotaList] = useState([]);
@@ -40,8 +41,10 @@ function MascotasPage(){
     // Peticion DELETE
     const eliminarMascota = async (id) => {
         //Preguntamos al usuario para evitar borrados por accidente
-        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
-        if (!confirmar) return;
+        const confirmado = await confirmarEliminacion('mascota');
+        
+        // Si el usuario presiona "Cancelar", detenemos la función aquí
+        if (!confirmado) return;
 
         try {
             // Pasamos el ID en la URL
